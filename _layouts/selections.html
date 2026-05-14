@@ -11,6 +11,7 @@ layout: page
   <option value="subjects">Subjects</option>
   <option value="people">People</option>
   <option value="places">Places</option>
+  <option value="text">Text</option>
 </select>
 
 <input
@@ -24,7 +25,7 @@ layout: page
   {% assign sources = site.data[site.sources_csv] %}
   {% assign authors = site.data[site.authors_csv] %}
 
-  {% for selection in site.data.selections %}
+  {% for selection in site.selections %}
     {% assign source = sources | where: "id", selection.source_id | first %}
     {% assign matching_authors = "" | split: "" %}
     {% if source %}
@@ -97,10 +98,11 @@ layout: page
   data-subjects="{% if selection.subjects %}{{ selection.subjects | downcase }}{% endif %}"
   data-authors="{{ authors_str }}"
   data-people="{{ people_str }}"
-  data-locations="{{ locations_str }}">
+  data-locations="{{ locations_str }}"
+  data-excerpt="{{ selection.content | strip_html | downcase | escape }}">
       <div class="text-sm">
         <div class="grid-item-shaded-header mb-2 rounded-t-lg text-lg font-semibold py-3 px-2 text-shadow-xl">
-          <a href="{{ '/selection/' | append: selection.id | relative_url }}">
+          <a href="{{ selection.url | relative_url }}">
             {% if matching_authors.size > 0 %}
               {{ matching_authors | join: ", " }}
             {% endif %}
@@ -185,13 +187,16 @@ document.addEventListener('DOMContentLoaded', function() {
       } else if (type === 'places') {
         const people = (item.getAttribute('data-locations') || '').split(';').map(s => s.trim());
         haystack = people.join(' ');
+      } else if (type === 'text') {
+        haystack = (item.getAttribute('data-excerpt') || '').toLowerCase().trim();
       } else if (type === 'all') {
         const title = (item.getAttribute('data-name') || '').toLowerCase().trim();
         const subjects = (item.getAttribute('data-subjects') || '').split(';').map(s => s.trim()).join(' ');
         const authors = (item.getAttribute('data-authors') || '').split(';').map(s => s.trim()).join(' ');
         const people = (item.getAttribute('data-people') || '').split(';').map(s => s.trim()).join(' ');
         const places = (item.getAttribute('data-locations') || '').split(';').map(s => s.trim()).join(' ');
-        haystack = [title, subjects, authors, people, places].join(' ');
+        const excerpt = (item.getAttribute('data-excerpt') || '').trim();
+        haystack = [title, subjects, authors, people, places, excerpt].join(' ');
       }
       if (haystack.includes(query)) {
         item.style.display = '';

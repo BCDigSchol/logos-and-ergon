@@ -5,13 +5,10 @@ layout: default
 <div class="w-full">
   <div class="mx-4 mt-2">
 
-{{ content }}
-
-
 {% assign annotations = site.data[site.annotations_csv] %}
 {% assign prefatory_annotations = "" | split: "" %}
 {% assign nonprefatory_annotations = "" | split: "" %}
-{% assign page_id = page.id | append: "" | strip %}
+{% assign page_id = page.slug | append: "" | strip %}
 
 {% for annotation in annotations %}
   {% assign annotation_selection_id = annotation.selection_id | append: "" | strip %}
@@ -68,8 +65,8 @@ layout: default
     {{ page.citation_start}}{% if page.citation_end and page.citation_start != page.citation_end %}-{{ page.citation_end }}
     {% endif %}
   </legend>
-  {% assign lines = page.excerpt | split: '\n' %}
-  <pre class="excerpt-block">{% for line in lines -%}{% assign parts = line | split: '\t' %}{% if parts.size > 1 %}<span class="line-number">{{ parts[0] }}</span>{{ parts[1] }}{% else %}{{ line }}{% endif %}
+  {% assign lines = page.raw_excerpt | split: '\n' %}
+  <pre class="excerpt-block">{% for line in lines -%}{% assign stripped_line = line | strip %}{% assign parts = stripped_line | split: '\t' %}{% if parts.size > 1 %}<span class="line-number">{{ parts[0] }}</span>{{ parts[1] }}{% else %}{{ stripped_line }}{% endif %}
 {% endfor %}</pre>
 </fieldset>
 
@@ -90,7 +87,7 @@ layout: default
 
 {%- comment -%} Image gallery for images matching this selection, with modal pop-out {%- endcomment -%}
 {% assign images = site.data[site.images_csv] %}
-{% assign gallery_images = images | where: "selection_id", page.id %}
+{% assign gallery_images = images | where: "selection_id", page.slug %}
 {% if gallery_images and gallery_images.size > 0 %}
   <div class="my-8 mt-5">
     <fieldset class="rounded-lg bg-gray-50 border border-blue-200 px-4 py-4 mb-6">
