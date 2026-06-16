@@ -1,6 +1,6 @@
 # change the followings to match your Github username and repo name
-# baseurl: "/glossia" # the name of your github repo
-# url: "https://BCDigSchol.github.io" # the url of your github pages (change BCDigSchol to your username)
+baseurl: "/glossia" # the name of your github repo
+url: "https://BCDigSchol.github.io" # the url of your github pages (change BCDigSchol to your username)
 
 # site information used in page title, meta data etc.
 title: This is a test
