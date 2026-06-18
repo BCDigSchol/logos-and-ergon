@@ -3,7 +3,7 @@ baseurl: "/glossia" # the name of your github repo
 url: "https://BCDigSchol.github.io" # the url of your github pages (change BCDigSchol to your username)
 
 # site information used in page title, meta data etc.
-title: This is a test
+title: Logos and Ergon
 # description: Developed by Boston College
 
 # csv file names - change if your csv files have different names
@@ -12,8 +12,9 @@ authors_csv: authors
 persons_csv: persons
 sources_csv: sources
 excerpts_csv: excerpts
-annotations_csv: annotations
 images_csv: images
+
+header_logo: assets/img/LogosErgon.png
 
 # address for map tile server - change if you have your own server
 map_tile_server: https://demotiles.maplibre.org/style.json
@@ -45,8 +46,8 @@ nav-menu:
     link: about
 
 hide-footer: false # set to true to hide the footer
-footer-message: Glossia Source Reader | CC BY-NC License
-footer-submessage:  By David J. Thomas, with the Digital Scholarship Group, Boston College
+footer-message: Logos and Ergon | CC BY-NC License
+footer-submessage:  By Mark Thatcher, with David J. Thomas & the Digital Scholarship Group, Boston College
 footer-submessage-link: https://ds.bc.edu
 
 # google-analytics: // if you want to use Google analytics, include your ID here

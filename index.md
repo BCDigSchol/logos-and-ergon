@@ -3,33 +3,38 @@ layout: page
 title: Home
 show-title: false
 ---
-
-<div class="w-full flex flex-col items-center justify-center min-h-[60vh] py-10 px-4 bg-gradient-to-br from-blue-50 to-gray-100">
-  <div class="max-w-2xl w-full text-center">
-    <h1 class="text-4xl md:text-5xl font-extrabold text-blue-800 mb-4 drop-shadow-lg">Glossia Source Reader</h1>
-    <p class="text-lg md:text-xl text-gray-700 mb-6">A modern, flexible, and visually engaging source reader for courses and research, powered by CSV data and static site generation.</p>
-    <div class="flex flex-wrap justify-center gap-4 mb-8">
-      <span class="inline-block bg-blue-100 text-blue-800 font-semibold rounded-full px-4 py-2 shadow">CSV-Driven Content</span>
-      <span class="inline-block bg-green-100 text-green-800 font-semibold rounded-full px-4 py-2 shadow">Static & Fast</span>
-      <span class="inline-block bg-yellow-100 text-yellow-800 font-semibold rounded-full px-4 py-2 shadow">Search & Filter</span>
-      <span class="inline-block bg-pink-100 text-pink-800 font-semibold rounded-full px-4 py-2 shadow">Responsive Design</span>
-    </div>
-    <div class="bg-white rounded-xl shadow-lg p-4 text-left m-4 border border-blue-100">
-      <h2 class="text-2xl font-bold text-blue-700 mb-2">What is this?</h2>
-      <p class="mb-2">Glossia Source Reader is a static website template for building rich, interactive source readers for courses, research, or digital editions. All content is managed via simple CSV files—no database or CMS required.</p>
-      <ul class="list-disc pl-6 text-gray-800 mb-2">
-        <li>Selections, sources, authors, people, locations, glossary, and more—all powered by CSVs.</li>
-        <li>Automatic page generation for each selection, author, location, etc.</li>
-        <li>Chip-style search and filter UI for fast navigation.</li>
-        <li>Annotation and excerpt display, with fieldset and card styling.</li>
-        <li>Image galleries, maps, and cross-linked data.</li>
-        <li>Fully static—host anywhere (GitHub Pages, Netlify, etc.).</li>
-      </ul>
-      <p class="mt-2">Perfect for digital humanities, teaching, or any project where you want to present curated readings and metadata in a beautiful, maintainable way.</p>
-    </div>
-    <a href="/selections/" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg text-xl transition">Browse Selections</a>
-    <div class="mt-8 text-gray-500 text-sm">
-      <p>Developed by Boston College Digital Scholarship Group. <br> <a href="https://github.com/BCDigSchol/glossia" class="underline hover:text-blue-700">View on GitHub</a></p>
-    </div>
-  </div>
+<div class="w-full flex flex-col justify-center items-center">
+  <a href="{{site.baseurl}}/">
+      <img src="{{ '/' | append: site.header_logo | relative_url }}" alt="Logo" class="block mr-10" style="width: 460px" />
+  </a>
 </div>
+*Logos and Ergon* is a free and open-access collection of primary sources for ancient Greek history – in other words, texts written by the ancient Greeks themselves. 
+
+*Logos* and *ergon* are two central themes in ancient Greek thought.
+
+* *Logos* – the word, the thought, the idea
+* *Ergon* – the deed, the action, the historical event
+
+Both the words and the deeds of the ancient Greeks can best be understood through primary sources. Primary sources are essential tools for the study of ancient Greek history, and are among the main ways we know anything at all about ancient Greece.
+
+Reading primary sources provides more direct access to what ancient Greeks were saying, doing, and thinking than reading a textbook. This in turns helps give you a deeper understanding of their ideas and their culture, and to begin thinking about how they are relevant to us today.
+
+But primary sources must also be read carefully and critically. Not everything in them can be taken at face value. Like anyone else, ancient authors had various biases and blind spots, whether accidentally or deliberately, and they were usually writing with a purpose in mind. To understand these sources properly, we need to take these biases and purposes into account. Analyzing primary sources through a critical lens is the best way to learn about Greek history from them.
+
+All in all, studying history isn’t just about learning what we know about the past – it’s also about thinking through *how* we know it. That’s what primary sources are for.
+
+<u>How to use this website</u>
+
+Each document collected in *Logos and Ergon*is translated together with a variety of supporting materials. These may include:
+
+* Citation – the name of the author, the title of the work, and a standard set of reference numbers that identify the specific passage being cited
+*	Date – the date when the work was written (not when the events described in it occurred!)
+*	Introduction – a few comments to provide context or introduction for this specific passage
+*	Footnotes – keyed to specific words that need clarification
+*	Author bio – a few comments about the author, including date, genre(s), place of origin, and anything else you should know
+*	Images – occasionally included to illustrate the text
+*	Map – with places mentioned in the text
+
+Each of these is intended to help you read and understand the text, and it’s a good idea to read everything on the page for each document. That will help you read the text critically – one of the key goals of *Logos and Ergon.*
+
+It’s also important to distinguish between the text and the supporting material. Only the text itself represents a primary source, because it was written by actual ancient Greeks. Everything else here counts as a secondary source.

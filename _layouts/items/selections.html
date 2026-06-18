@@ -5,35 +5,25 @@ layout: default
 <div class="w-full">
   <div class="mx-4 mt-2">
 
-{% assign annotations = site.data[site.annotations_csv] %}
-{% assign prefatory_annotations = "" | split: "" %}
-{% assign nonprefatory_annotations = "" | split: "" %}
-{% assign page_id = page.slug | append: "" | strip %}
-
-{% for annotation in annotations %}
-  {% assign annotation_selection_id = annotation.selection_id | append: "" | strip %}
-  {% assign is_prefatory = annotation.is_prefatory | downcase | strip %}
-  {% if annotation_selection_id == page_id %}
-    {% if is_prefatory == "true" %}
-      {% assign prefatory_annotations = prefatory_annotations | push: annotation %}
-    {% else %}
-      {% assign nonprefatory_annotations = nonprefatory_annotations | push: annotation %}
-    {% endif %}
-  {% endif %}
-{% endfor %}
-
-{% if prefatory_annotations.size > 0 %}
+{% if page.preface %}
+  {%- assign is_preface_array = page.preface | first -%}
   <fieldset class="my-5 rounded-lg bg-gray-100">
     <legend class="border border-solid border-grey-200 bg-gray-400 rounded-lg px-3 py-1 text-white font-bold shadow-lg text-shadow">
       Prefatory Notes
     </legend>
-    <ul class="list-none m-0 p-0">
-      {% for annotation in prefatory_annotations %}
-        <li class="mb-3 p-4">
-          <em>{{ annotation.text | markdownify }}</em>
-        </li>
-      {% endfor %}
-    </ul>
+    {% if is_preface_array %}
+        {% for annotation in page.preface %}
+          <li class="ml-10">
+            <em>{{ annotation | markdownify }}</em>
+          </li>
+        {% endfor %}
+    {% else%}
+      <ul class="list-none m-0 p-0">
+          <li class="mb-3 p-4">
+            <em>{{ page.preface | markdownify }}</em>
+          </li>
+      </ul>
+    {% endif %}
   </fieldset>
 {% endif %}
 
@@ -70,17 +60,27 @@ layout: default
 {% endfor %}</pre>
 </fieldset>
 
-{% if nonprefatory_annotations.size > 0 %}
+{% if page.footnotes %}
+  {%- assign are_footnotes_array = page.footnotes | first -%}
   <fieldset class="my-5 rounded-lg bg-gray-100">
     <legend class="border border-solid border-grey-200 bg-gray-400 rounded-lg px-3 py-1 text-white font-bold shadow-lg text-shadow">
       Footnotes
     </legend>
     <ol class="m-0 p-0">
-      {% for annotation in nonprefatory_annotations %}
-        <li class="ml-10">
-          <em>{{ annotation.text | markdownify }}</em>
+      {% if are_footnotes_array %}
+        {% for annotation in page.footnotes %}
+          <li class="ml-10">
+            <em>{{ annotation | markdownify }}</em>
+          </li>
+        {% endfor %}
+      {% else %}
+        <ul class="list-none m-0 p-0">
+        <li class="mb-3 p-4">
+          <em>{{ page.footnotes | markdownify }}</em>
         </li>
-      {% endfor %}
+    </ul>
+      {% endif %}
+
     </ol>
   </fieldset>
 {% endif %}
@@ -194,21 +194,23 @@ layout: default
     </p>
 
     <p>
-    Date of source: 
-    <em>
-      {% assign sources = site.data[site.sources_csv] %}
-      {% assign source = sources | where: "id", page.source_id | first %}
-      {% if source and source.source_date %}
-        {{ source.source_date }}
-      {% else %}
-        Unknown
-      {% endif %}
-    </em>
-</p>
+      Date of source: 
+      <em>
+        {% assign sources = site.data[site.sources_csv] %}
+        {% assign source = sources | where: "id", page.source_id | first %}
+        {% if source and source.source_date %}
+          {{ source.source_date }}
+        {% else %}
+          Unknown
+        {% endif %}
+      </em>
+    </p>
 
+{% if page.citation_date %}
 <p>
     Date of events: <em>{{ page.citation_date }}</em>
 </p>
+{% endif %}
 
 <div>
   {% assign people = site.data[site.persons_csv] %}
@@ -386,9 +388,12 @@ layout: default
     });
     {% for location_info in matching_locations -%}
       {% assign parts = location_info | split: '|' -%}
-        new maplibregl.Marker()
+        var marker{{ forloop.index }} = new maplibregl.Marker()
             .setLngLat([{{ parts[3] }}, {{ parts[2] }}])
+            .setPopup(new maplibregl.Popup({ offset: 25, closeButton: false, closeOnClick: false })
+                .setText({{ parts[1] | jsonify }}))
             .addTo(map);
+        marker{{ forloop.index }}.togglePopup();
     {% endfor %}
 </script>
 {% endif %}
