@@ -1,6 +1,6 @@
 # change the followings to match your Github username and repo name
-#baseurl: "/logos-and-ergon" # the name of your github repo
-#url: "https://BCDigSchol.github.io" # the url of your github pages (change BCDigSchol to your username)
+baseurl: "/logos-and-ergon/" # the name of your github repo
+url: "https://BCDigSchol.github.io" # the url of your github pages (change BCDigSchol to your username)
 
 # site information used in page title, meta data etc.
 title: Logos and Ergon
