@@ -1,5 +1,5 @@
 # change the followings to match your Github username and repo name
-baseurl: "/glossia" # the name of your github repo
+baseurl: "/logos-and-ergon" # the name of your github repo
 url: "https://BCDigSchol.github.io" # the url of your github pages (change BCDigSchol to your username)
 
 # site information used in page title, meta data etc.
@@ -11,8 +11,6 @@ locations_csv: locations
 authors_csv: authors
 persons_csv: persons
 sources_csv: sources
-excerpts_csv: excerpts
-images_csv: images
 
 header_logo: assets/img/LogosErgon.png
 

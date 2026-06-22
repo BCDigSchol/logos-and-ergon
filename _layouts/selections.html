@@ -31,7 +31,7 @@ layout: page
     {% if source %}
       {%- comment -%} Handle single or multiple author_ids on the source {%- endcomment -%}
       {% if source.author_ids contains ";" %}
-        {% assign author_ids = source.author_ids | split: ";" | map: "strip" %}
+        {% assign author_ids = source.author_ids | remove: " " | split: ";" %}
       {% else %}
         {% assign author_ids = source.author_ids | append: "" | split: "|" %}
       {% endif %}
@@ -103,14 +103,18 @@ layout: page
       <div class="text-sm">
         <div class="grid-item-shaded-header mb-2 rounded-t-lg text-lg font-semibold py-3 px-2 text-shadow-xl">
           <a href="{{ selection.url | relative_url }}">
-            {% if matching_authors.size > 0 %}
-              {{ matching_authors | join: ", " }}
-            {% endif %}
-            &nbsp;{{ source.abbreviated_title }}
-            {% if selection.citation_start == selection.citation_end %}
-              &nbsp;{{ selection.citation_start }}
+            {% if selection.custom_label == nil %}
+              {% if matching_authors.size > 0 %}
+                {{ matching_authors | join: ", " }}
+              {% endif %}
+              &nbsp;{{ source.abbreviated_title }}
+              {% if selection.citation_start == selection.citation_end or selection.citation_end == nil %}
+                &nbsp;{{ selection.citation_start }}
+              {% else %}
+                &nbsp;{{ selection.citation_start }}-{{ selection.citation_end }}
+              {% endif %}
             {% else %}
-              &nbsp;{{ selection.citation_start }}-{{ selection.citation_end }}
+              {{ selection.custom_label }}
             {% endif %}
           </a>
         </div>

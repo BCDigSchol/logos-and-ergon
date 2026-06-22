@@ -29,30 +29,35 @@ layout: default
 
 <fieldset class="my-8 rounded-2xl bg-white border-2 border-blue-400 shadow-2xl py-6 transition-transform duration-200 hover:scale-[1.01]">
   <legend class="border border-grey-200 bg-gray-800 border-solid rounded-lg px-4 py-2 text-white font-bold shadow-md text-lg tracking-wide">
-    {% assign sources = site.data[site.sources_csv] %}
-    {% assign authors = site.data[site.authors_csv] %}
-    {% assign source = sources | where: "id", page.source_id | first %}
-    {% if source %}
-      {%- comment -%} Handle single or multiple author_ids on the source {%- endcomment -%}
-      {% if source.author_ids contains ";" %}
-        {% assign author_ids = source.author_ids | split: ";" | map: "strip" %}
-      {% else %}
-        {% assign author_ids = source.author_ids | append: "" | split: "|" %}
-      {% endif %}
-      {% assign matching_authors = "" | split: "" %}
-      {% for author in authors %}
-        {% assign author_id_str = author.id | append: "" | strip %}
-        {% if author_ids contains author_id_str %}
-          {% assign author_info = author.id | append: '|' | append: author.full_name %}
-            {% assign matching_authors = matching_authors | push: author_info %}
+    {% if page.custom_label == nil %}
+      {% assign sources = site.data[site.sources_csv] %}
+      {% assign authors = site.data[site.authors_csv] %}
+      {% assign source = sources | where: "id", page.source_id | first %}
+      {% if source %}
+        {%- comment -%} Handle single or multiple author_ids on the source {%- endcomment -%}
+        {% if source.author_ids contains ";" %}
+          {% assign author_ids = source.author_ids | remove: " " | split: ";" %}
+        {% else %}
+          {% assign author_ids = source.author_ids | append: "" | split: "|" %}
         {% endif %}
-      {% endfor %}
-    {% endif %}
-    {% if matching_authors.size > 0 %}
-      {% for author_info in matching_authors -%}
-      {% assign parts = author_info | split: '|' -%}
-      {{ parts[1] }}{% if forloop.last == false %},{% endif -%}{% endfor %}{% endif %}, {{ source.title }}
-    {{ page.citation_start}}{% if page.citation_end and page.citation_start != page.citation_end %}-{{ page.citation_end }}
+        {% assign matching_authors = "" | split: "" %}
+        {% for author in authors %}
+          {% assign author_id_str = author.id | append: "" | strip %}
+          {% if author_ids contains author_id_str %}
+            {% assign author_info = author.id | append: '|' | append: author.full_name %}
+              {% assign matching_authors = matching_authors | push: author_info %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      {% if matching_authors.size > 0 %}
+        {% for author_info in matching_authors -%}
+        {% assign parts = author_info | split: '|' -%}
+        {{ parts[1] }}{% if forloop.last == false %},{% endif -%}{% endfor %}, {% endif %}{{ source.title }}
+      {{ page.citation_start}}{% if page.citation_end and page.citation_start != page.citation_end %}-{{ page.citation_end }}
+      {% endif %}
+
+    {% else %}
+      {{ page.custom_label }}
     {% endif %}
   </legend>
   {% assign lines = page.raw_excerpt | split: '\n' %}
@@ -69,16 +74,14 @@ layout: default
     <ol class="m-0 p-0">
       {% if are_footnotes_array %}
         {% for annotation in page.footnotes %}
-          <li class="ml-10">
+          <li id="{{ 'note-' | append: forloop.index }}" class="ml-10">
             <em>{{ annotation | markdownify }}</em>
           </li>
         {% endfor %}
       {% else %}
-        <ul class="list-none m-0 p-0">
-        <li class="mb-3 p-4">
+        <li id="1" class="ml-10">
           <em>{{ page.footnotes | markdownify }}</em>
         </li>
-    </ul>
       {% endif %}
 
     </ol>
@@ -88,24 +91,43 @@ layout: default
 {%- comment -%} Image gallery for images matching this selection, with modal pop-out {%- endcomment -%}
 {% assign images = site.data[site.images_csv] %}
 {% assign gallery_images = images | where: "selection_id", page.slug %}
-{% if gallery_images and gallery_images.size > 0 %}
+
+{% assign is_gallery_array = page.images | first %}
+
+
+{% if page.images %}
   <div class="my-8 mt-5">
     <fieldset class="rounded-lg bg-gray-50 border border-blue-200 px-4 py-4 mb-6">
       <legend class="border border-solid border-grey-200 bg-gray-400 rounded-lg px-3 py-1 text-white font-bold shadow-lg text-shadow">Images for this Selection</legend>
       <div class="flex flex-wrap gap-6 justify-start">
-        {% for image in gallery_images %}
-          {% assign img_url_parts = image.url | split: '/' %}
-          {% assign img_filename = img_url_parts | last | remove_first: '/' %}
-          <figure class="w-32 flex flex-col items-center mb-4 cursor-pointer">
-            <img src="{{ '/assets/img/' | append: img_filename | relative_url }}" alt="{{ image.caption | default: 'Selection image' }}" class="rounded shadow-md max-w-full max-h-32 object-cover bg-white border border-gray-200 gallery-thumb" loading="lazy" style="width: 8rem; height: 8rem; object-fit: cover; cursor: pointer;" data-full="{{ img_filename }}" data-caption="{{ image.caption | escape }}" data-credit="{{ image.credit | escape }}" />
-            {% if image.caption or image.credit %}
-              <figcaption class="mt-2 text-xs text-gray-700 text-center">
-                {% if image.caption %}<span>{{ image.caption }}</span>{% endif %}
-                {% if image.credit %}<span class="block text-xs text-gray-500">{{ image.credit }}</span>{% endif %}
-              </figcaption>
-            {% endif %}
-          </figure>
-        {% endfor %}
+        {% if is_gallery_array %}
+            {% for image in page.images %}
+            {% assign img_url_parts = image.filename | split: '/' %}
+            {% assign img_filename = img_url_parts | last | remove_first: '/' %}
+            <figure class="w-32 flex flex-col items-center mb-4 cursor-pointer">
+              <img src="{{ '/assets/img/' | append: img_filename | relative_url }}" alt="{{ image.caption | default: 'Selection image' }}" class="rounded shadow-md max-w-full max-h-32 object-cover bg-white border border-gray-200 gallery-thumb" loading="lazy" style="width: 8rem; height: 8rem; object-fit: cover; cursor: pointer;" data-full="{{ img_filename }}" data-caption="{{ image.caption | escape }}" data-credit="{{ image.credit | escape }}" />
+              {% if image.caption or image.credit %}
+                <figcaption class="mt-2 text-xs text-gray-700 text-center">
+                  {% if image.caption %}<span>{{ image.caption }}</span>{% endif %}
+                  {% if image.credit %}<span class="block text-xs text-gray-500">{{ image.credit }}</span>{% endif %}
+                </figcaption>
+              {% endif %}
+            </figure>
+          {% endfor %}
+          {% else %}
+            {% assign image = page.images %}
+            {% assign img_url_parts = image.filename | split: '/' %}
+            {% assign img_filename = img_url_parts | last | remove_first: '/' %}
+            <figure class="w-32 flex flex-col items-center mb-4 cursor-pointer">
+              <img src="{{ '/assets/img/' | append: img_filename | relative_url }}" alt="{{ image.caption | default: 'Selection image' }}" class="rounded shadow-md max-w-full max-h-32 object-cover bg-white border border-gray-200 gallery-thumb" loading="lazy" style="width: 8rem; height: 8rem; object-fit: cover; cursor: pointer;" data-full="{{ img_filename }}" data-caption="{{ image.caption | escape }}" data-credit="{{ image.credit | escape }}" />
+              {% if image.caption or image.credit %}
+                <figcaption class="mt-2 text-xs text-gray-700 text-center">
+                  {% if image.caption %}<span>{{ image.caption }}</span>{% endif %}
+                  {% if image.credit %}<span class="block text-xs text-gray-500">{{ image.credit }}</span>{% endif %}
+                </figcaption>
+              {% endif %}
+            </figure>
+        {% endif %}
       </div>
     </fieldset>
     <!-- Modal for full-size image popout -->
@@ -162,49 +184,37 @@ layout: default
       Selection Details
     </legend>
 
-    <p>
-      Author:
-
-      {% assign sources = site.data[site.sources_csv] %}
-  {% assign authors = site.data[site.authors_csv] %}
-      {% assign source = sources | where: "id", page.source_id | first %}
-        {% if source %}
-          {%- comment -%} Handle single or multiple author_ids on the source {%- endcomment -%}
-          {% if source.author_ids contains ";" %}
-            {% assign author_ids = source.author_ids | split: ";" | map: "strip" %}
-          {% else %}
-            {% assign author_ids = source.author_ids | append: "" | split: "|" %}
-          {% endif %}
-          {% assign matching_authors = "" | split: "" %}
-          {% for author in authors %}
-            {% assign author_id_str = author.id | append: "" | strip %}
-            {% if author_ids contains author_id_str %}
-              {% assign author_info = author.id | append: '|' | append: author.full_name %}
-                {% assign matching_authors = matching_authors | push: author_info %}
-            {% endif %}
-          {% endfor %}
-          {% if matching_authors.size > 0 %}
-            {% for author_info in matching_authors -%}
-            {% assign parts = author_info | split: '|' -%}
-            <a href="{{ 'author/' | append: parts[0] | relative_url }}">{{ parts[1] }}</a>{% if forloop.last == false %},{% endif -%}
-            {% endfor %}{% endif %}, <a href="{{ 'source/' | append: source.id | relative_url }}">{{ source.title }}</a>
+    {% assign sources = site.data[site.sources_csv] %}
+    {% assign authors = site.data[site.authors_csv] %}
+    {% assign source = sources | where: "id", page.source_id | first %}
+    {% if source %}
+      {%- comment -%} Handle single or multiple author_ids on the source {%- endcomment -%}
+      {% if source.author_ids contains ";" %}
+        {% assign author_ids = source.author_ids | remove: " " | split: ";" %}
+      {% else %}
+        {% assign author_ids = source.author_ids | append: "" | split: "|" %}
+      {% endif %}
+      {%- comment -%} source_date may be a comma-separated list running parallel to author_ids {%- endcomment -%}
+      {% assign source_dates = source.source_date | split: "," %}
+      {% for author_id in author_ids %}
+        {% assign author_id_str = author_id | strip %}
+        {% assign author = authors | where: "id", author_id_str | first %}
+        {% if author %}
+          <p class="mb-1">
+            Author: <a href="{{ 'author/' | append: author.id | relative_url }}">{{ author.full_name }}</a><br>
+            Date:
+            <em>
+              {% assign this_date = source_dates[forloop.index0] | default: source.source_date %}
+              {% if this_date and this_date != "" %}{{ this_date | strip }}{% else %}Unknown{% endif %}
+            </em>
+          </p>
         {% endif %}
-
-        {{ page.citation_start}}{% if page.citation_end and page.citation_start != page.citation_end %}-{{ page.citation_end }}{% endif %}
-    </p>
-
-    <p>
-      Date of source: 
-      <em>
-        {% assign sources = site.data[site.sources_csv] %}
-        {% assign source = sources | where: "id", page.source_id | first %}
-        {% if source and source.source_date %}
-          {{ source.source_date }}
-        {% else %}
-          Unknown
-        {% endif %}
-      </em>
-    </p>
+      {% endfor %}
+      <p>
+        Source: <a href="{{ 'source/' | append: source.id | relative_url }}">{{ source.title }}</a>
+        {{ page.citation_start }}{% if page.citation_end and page.citation_start != page.citation_end %}-{{ page.citation_end }}{% endif %}
+      </p>
+    {% endif %}
 
 {% if page.citation_date %}
 <p>
@@ -311,7 +321,7 @@ layout: default
   {% assign source = sources | where: "id", page.source_id | first %}
   {% if source %}
     {% if source.author_ids contains ";" %}
-      {% assign author_ids = source.author_ids | split: ";" | map: "strip" %}
+      {% assign author_ids = source.author_ids | remove: " " | split: ";" %}
     {% else %}
       {% assign author_ids = source.author_ids | append: "" | split: "|" %}
     {% endif %}

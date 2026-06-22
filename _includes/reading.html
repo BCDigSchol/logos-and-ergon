@@ -1,12 +1,11 @@
-{%- assign selections = site.data[site.selections_csv] -%}
 {%- assign sources = site.data[site.sources_csv] -%}
 {%- assign authors = site.data[site.authors_csv] -%}
-{%- assign selection = selections | where: "id", include.id | first -%}
+{%- assign selection = site.selections | where: "slug", include.id | first -%}
 {%- if selection -%}
   {%- assign source = sources | where: "id", selection.source_id | first -%}
   {%- if source -%}
     {%- if source.author_ids contains ";" -%}
-      {%- assign author_ids = source.author_ids | split: ";" | map: "strip" -%}
+      {%- assign author_ids = source.author_ids | remove: " " | split: ";" -%}
     {%- else -%}
       {%- assign author_ids = source.author_ids | append: "" | split: "|" -%}
     {%- endif -%}
@@ -17,7 +16,7 @@
         {%- assign matching_authors = matching_authors | push: author.short_name -%}
       {%- endif -%}
     {%- endfor -%}
-    <a href="{{ '/selection/' | append: selection.id | relative_url }}" class="inline-block bg-blue-100 border border-blue-300 rounded-lg px-4 py-2 text-base font-semibold text-blue-700 shadow hover:bg-blue-200 hover:text-blue-900 transition" title="{% if matching_authors.size > 0 %}{{ matching_authors | join: ', ' }}, {% endif %}{{ source.abbreviated_title }} {{ selection.citation_start }}{% if selection.citation_end and selection.citation_end != selection.citation_start %}-{{ selection.citation_end }}{% endif %}"> {% if matching_authors.size > 0 %}{{ matching_authors | join: ', ' }}, {% endif %}{{ source.abbreviated_title }} {{ selection.citation_start }}{% if selection.citation_end and selection.citation_end != selection.citation_start %}-{{ selection.citation_end }}{% endif %}</a>
+    <a href="{{ selection.url | relative_url }}" class="inline-block bg-blue-100 border border-blue-300 rounded-lg px-4 py-2 text-base font-semibold text-blue-700 shadow hover:bg-blue-200 hover:text-blue-900 transition" title="{% if matching_authors.size > 0 %}{{ matching_authors | join: ', ' }}, {% endif %}{{ source.abbreviated_title }} {{ selection.citation_start }}{% if selection.citation_end and selection.citation_end != selection.citation_start %}-{{ selection.citation_end }}{% endif %}"> {% if matching_authors.size > 0 %}{{ matching_authors | join: ', ' }}, {% endif %}{{ source.abbreviated_title }} {{ selection.citation_start }}{% if selection.citation_end and selection.citation_end != selection.citation_start %}-{{ selection.citation_end }}{% endif %}</a>
   {%- else -%}
     <span class="inline-block bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 text-base font-semibold text-gray-500 shadow">Source not found</span>
   {%- endif -%}

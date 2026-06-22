@@ -9,14 +9,17 @@ layout: page
   style="margin-bottom: 1em; padding: 0.5em; width: 100%; max-width: 400px;"
 />
 
-{% assign selections = site.data[site.selections_csv] %}
+{% assign selections = site.selections %}
 {% assign all_subjects = "" | split: "" %}
+{% assign seen_lower = "" | split: "" %}
 {% for selection in selections %}
   {% if selection.subjects %}
     {% assign subjects = selection.subjects | split: ";" %}
     {% for subject in subjects %}
       {% assign subject_clean = subject | strip %}
-      {% unless all_subjects contains subject_clean %}
+      {% assign subject_lower = subject_clean | downcase %}
+      {% unless seen_lower contains subject_lower %}
+        {% assign seen_lower = seen_lower | push: subject_lower %}
         {% assign all_subjects = all_subjects | push: subject_clean %}
       {% endunless %}
     {% endfor %}

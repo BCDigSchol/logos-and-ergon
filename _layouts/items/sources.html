@@ -14,21 +14,38 @@ layout: default
         Robustly handle author_ids as a string or array, and always get an array of strings
         {%- endcomment -%}
         {% if page.author_ids contains ";" %}
-            {% assign author_ids = page.author_ids | split: ";" | map: "strip" %}
+            {% assign author_ids = page.author_ids | remove: " " | split: ";" %}
         {% else %}
             {% assign author_ids = page.author_ids | append: "" | split: "|" %}
         {% endif %}
         {% assign authors = site.data[site.authors_csv] %}
-        <ul>
+        {% assign matching_authors = "" | split: "" %}
         {% for author in authors %}
             {% assign author_id_str = author.id | append: "" | strip %}
             {% if author_ids contains author_id_str %}
-                <li>
-                    <a href="{{ 'author/' | append: author.id | relative_url }}">{{ author.short_name }}</a>
-                </li>
+                {% assign matching_authors = matching_authors | push: author %}
             {% endif %}
         {% endfor %}
-        </ul>
+        {% if matching_authors.size > 0 %}
+            <ul class="list-none m-0 p-0">
+            {% for author in matching_authors %}
+                <li class="mb-4">
+                    <span class="font-bold">
+                        <a href="{{ 'author/' | append: author.id | relative_url }}">{{ author.full_name }}</a>
+                    </span>
+                    <div class="text-sm text-gray-700 mb-1">
+                        {% if author.birth %}
+                            Born: {{ author.birth }}{% if author.birth_approximate == "TRUE" %} (approx.){% endif %}<br>
+                        {% endif %}
+                        {% if author.death %}
+                            Died: {{ author.death }}{% if author.death_approximate == "TRUE" %} (approx.){% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="text-base text-gray-900">{{ author.description }}</div>
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
         <p>
             {{ page.description }}
         </p>
