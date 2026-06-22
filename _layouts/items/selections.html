@@ -306,7 +306,7 @@ layout: default
   {% assign subjects = page.subjects | split: ";" %}
   {% for subject in subjects %}
     <span class="inline-block bg-gray-200 rounded-xl px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-      <a href="selections?search_field=subjects&search_term={{ subject | strip | url_encode }}">{{ subject | strip }}</a>
+      <a href="{{ 'selections' | relative_url }}?search_field=subjects&search_term={{ subject | strip | url_encode }}">{{ subject | strip }}</a>
     </span>
   {% endfor %}
 </div>
